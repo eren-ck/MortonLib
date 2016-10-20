@@ -1,13 +1,14 @@
 package com.erenck.mortonlib;
 
 /**
+ * Encode/decode 2D coordinates to Morton codes (Z-order curve)
  *
  * @author eren-ck
  */
 public class Morton2D {
 
     // Source: http://graphics.stanford.edu/~seander/bithacks.html#InterleaveTableLookup
-    private static int MortonTable256[]
+    private int MortonTable256[]
             = {
                 0x0000, 0x0001, 0x0004, 0x0005, 0x0010, 0x0011, 0x0014, 0x0015,
                 0x0040, 0x0041, 0x0044, 0x0045, 0x0050, 0x0051, 0x0054, 0x0055,
@@ -43,15 +44,43 @@ public class Morton2D {
                 0x5540, 0x5541, 0x5544, 0x5545, 0x5550, 0x5551, 0x5554, 0x5555
             };
 
-    public static void main(String[] args) {
+    private int MortonTable256DecodeX[] = {
+        0, 1, 0, 1, 2, 3, 2, 3, 0, 1, 0, 1, 2, 3, 2, 3,
+        4, 5, 4, 5, 6, 7, 6, 7, 4, 5, 4, 5, 6, 7, 6, 7,
+        0, 1, 0, 1, 2, 3, 2, 3, 0, 1, 0, 1, 2, 3, 2, 3,
+        4, 5, 4, 5, 6, 7, 6, 7, 4, 5, 4, 5, 6, 7, 6, 7,
+        8, 9, 8, 9, 10, 11, 10, 11, 8, 9, 8, 9, 10, 11, 10, 11,
+        12, 13, 12, 13, 14, 15, 14, 15, 12, 13, 12, 13, 14, 15, 14, 15,
+        8, 9, 8, 9, 10, 11, 10, 11, 8, 9, 8, 9, 10, 11, 10, 11,
+        12, 13, 12, 13, 14, 15, 14, 15, 12, 13, 12, 13, 14, 15, 14, 15,
+        0, 1, 0, 1, 2, 3, 2, 3, 0, 1, 0, 1, 2, 3, 2, 3,
+        4, 5, 4, 5, 6, 7, 6, 7, 4, 5, 4, 5, 6, 7, 6, 7,
+        0, 1, 0, 1, 2, 3, 2, 3, 0, 1, 0, 1, 2, 3, 2, 3,
+        4, 5, 4, 5, 6, 7, 6, 7, 4, 5, 4, 5, 6, 7, 6, 7,
+        8, 9, 8, 9, 10, 11, 10, 11, 8, 9, 8, 9, 10, 11, 10, 11,
+        12, 13, 12, 13, 14, 15, 14, 15, 12, 13, 12, 13, 14, 15, 14, 15,
+        8, 9, 8, 9, 10, 11, 10, 11, 8, 9, 8, 9, 10, 11, 10, 11,
+        12, 13, 12, 13, 14, 15, 14, 15, 12, 13, 12, 13, 14, 15, 14, 15
+    };
 
-        Morton2D mortonTest = new Morton2D();
-
-        if (mortonTest.encode(32, 436) == 167456) {
-            System.out.println("Hello World");
-        }
-
-    }
+    private int MortonTable256DecodeY[] = {
+        0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3,
+        0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3,
+        4, 4, 5, 5, 4, 4, 5, 5, 6, 6, 7, 7, 6, 6, 7, 7,
+        4, 4, 5, 5, 4, 4, 5, 5, 6, 6, 7, 7, 6, 6, 7, 7,
+        0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3,
+        0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3,
+        4, 4, 5, 5, 4, 4, 5, 5, 6, 6, 7, 7, 6, 6, 7, 7,
+        4, 4, 5, 5, 4, 4, 5, 5, 6, 6, 7, 7, 6, 6, 7, 7,
+        8, 8, 9, 9, 8, 8, 9, 9, 10, 10, 11, 11, 10, 10, 11, 11,
+        8, 8, 9, 9, 8, 8, 9, 9, 10, 10, 11, 11, 10, 10, 11, 11,
+        12, 12, 13, 13, 12, 12, 13, 13, 14, 14, 15, 15, 14, 14, 15, 15,
+        12, 12, 13, 13, 12, 12, 13, 13, 14, 14, 15, 15, 14, 14, 15, 15,
+        8, 8, 9, 9, 8, 8, 9, 9, 10, 10, 11, 11, 10, 10, 11, 11,
+        8, 8, 9, 9, 8, 8, 9, 9, 10, 10, 11, 11, 10, 10, 11, 11,
+        12, 12, 13, 13, 12, 12, 13, 13, 14, 14, 15, 15, 14, 14, 15, 15,
+        12, 12, 13, 13, 12, 12, 13, 13, 14, 14, 15, 15, 14, 14, 15, 15
+    };
 
     /**
      * Morton (z-ordering) encoding with Lookup Table method
@@ -60,7 +89,7 @@ public class Morton2D {
      * @param y range is from 0 to 16777215.
      * @return	return Morton Code as long .
      */
-    private long encode(int x, int y) {
+    public long encode(int x, int y) {
         long result = 0;
         result = MortonTable256[y >> 8] << 17
                 | MortonTable256[x >> 8] << 16
@@ -68,4 +97,39 @@ public class Morton2D {
                 | MortonTable256[x & 0xFF];
         return result;
     }
+
+    /**
+     * Decode Morton (z-ordering)
+     *
+     * @param c morton code up to 48 bits
+     * @return	array [x,y] .
+     */
+    public int[] decode(long c) {
+        int[] result = new int[2];
+        // Morton codes up to 48 bits
+        if (c < Math.pow(2, 48)) {
+            result[0] = decodeHelper(c, MortonTable256DecodeX);
+            result[1] = decodeHelper(c, MortonTable256DecodeY);
+        }
+        return result;
+    }
+
+    /**
+     * Helper Method for LUT decoding
+     *
+     * @param c morton code up to 48 bits
+     * @param coord morton decode LUT
+     *
+     * @return decoded value
+     */
+    private static int decodeHelper(long c, int coord[]) {
+        long a = 0;
+        long EIGHTBITMASK = 0x000000ff;
+        long loops = (long) Math.floor(64.0f / 9.0f);
+        for (long i = 0; i < loops; ++i) {
+            a |= (coord[(int) ((c >> (i * 8)) & EIGHTBITMASK)] << (4 * i));
+        }
+        return (int) a;
+    }
+
 }
