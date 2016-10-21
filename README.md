@@ -6,6 +6,8 @@ Java library to encode/decode Morton codes (Z-order curve)
 # Source
 
 [Bit Twiddling Hacks](http://graphics.stanford.edu/~seander/bithacks.html#InterleaveTableLookup) 
+[libmorton](https://github.com/Forceflow/libmorton) 
+[node-morton](https://github.com/kkaefer/node-morton) 
 
 # License 
 
