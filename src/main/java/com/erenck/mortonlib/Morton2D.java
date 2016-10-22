@@ -7,8 +7,7 @@ package com.erenck.mortonlib;
  */
 public class Morton2D {
 
-    // Source: http://graphics.stanford.edu/~seander/bithacks.html#InterleaveTableLookup
-    private int MortonTable256[]
+    private final int MortonTable256[]
             = {
                 0x0000, 0x0001, 0x0004, 0x0005, 0x0010, 0x0011, 0x0014, 0x0015,
                 0x0040, 0x0041, 0x0044, 0x0045, 0x0050, 0x0051, 0x0054, 0x0055,
@@ -44,7 +43,7 @@ public class Morton2D {
                 0x5540, 0x5541, 0x5544, 0x5545, 0x5550, 0x5551, 0x5554, 0x5555
             };
 
-    private int MortonTable256DecodeX[] = {
+    private final int MortonTable256DecodeX[] = {
         0, 1, 0, 1, 2, 3, 2, 3, 0, 1, 0, 1, 2, 3, 2, 3,
         4, 5, 4, 5, 6, 7, 6, 7, 4, 5, 4, 5, 6, 7, 6, 7,
         0, 1, 0, 1, 2, 3, 2, 3, 0, 1, 0, 1, 2, 3, 2, 3,
@@ -63,7 +62,7 @@ public class Morton2D {
         12, 13, 12, 13, 14, 15, 14, 15, 12, 13, 12, 13, 14, 15, 14, 15
     };
 
-    private int MortonTable256DecodeY[] = {
+    private final int MortonTable256DecodeY[] = {
         0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3,
         0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3,
         4, 4, 5, 5, 4, 4, 5, 5, 6, 6, 7, 7, 6, 6, 7, 7,
@@ -90,12 +89,10 @@ public class Morton2D {
      * @return	return Morton Code as long .
      */
     public long encode(int x, int y) {
-        long result = 0;
-        result = MortonTable256[y >> 8] << 17
+        return (MortonTable256[y >> 8] << 17
                 | MortonTable256[x >> 8] << 16
                 | MortonTable256[y & 0xFF] << 1
-                | MortonTable256[x & 0xFF];
-        return result;
+                | MortonTable256[x & 0xFF]);
     }
 
     /**

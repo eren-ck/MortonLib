@@ -1,7 +1,6 @@
 package test;
 
 import junit.framework.*;
-import org.junit.Test;
 import com.erenck.mortonlib.Morton2D;
 import java.util.Arrays;
 
