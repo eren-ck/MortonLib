@@ -89,10 +89,11 @@ public class Morton2D {
      * @return	return Morton Code as long .
      */
     public long encode(int x, int y) {
-        return (MortonTable256[y >> 8] << 17
-                | MortonTable256[x >> 8] << 16
-                | MortonTable256[y & 0xFF] << 1
-                | MortonTable256[x & 0xFF]);
+        int EIGHTBITMASK = 0xff;
+        return (MortonTable256[(y >> 8) & EIGHTBITMASK] << 17
+                | MortonTable256[(x >> 8) & EIGHTBITMASK] << 16
+                | MortonTable256[y & EIGHTBITMASK] << 1
+                | MortonTable256[x & EIGHTBITMASK]);
     }
 
     /**
