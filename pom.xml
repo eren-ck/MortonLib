@@ -19,4 +19,11 @@
             <type>jar</type>
         </dependency>
     </dependencies>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://spdx.org/licenses/MIT.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 </project>
